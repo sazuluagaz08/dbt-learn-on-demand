@@ -54,6 +54,9 @@ jobs:
         with:
           name: dbt-state
           path: target  # dbt will save state here with `dbt ls --state target`
+      
+      - name: Debug models env var
+        run: echo "${{ env.MODELS }}"        
 
       # Run dbt list to get modified models
       - name: Get modified models

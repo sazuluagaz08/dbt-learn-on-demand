@@ -4,7 +4,7 @@ default:
     dev:
       type: snowflake
       account: WDQDMFF-HPC87490
-      user: ${{ secrets.SNOWFLAKE_USER }}
+      user: ${{ secrets.SNOWFLAKE_USER}}
       password: ${{ secrets.SNOWFLAKE_PASSWORD}}
       role: USERADMIN
       database: analytics
