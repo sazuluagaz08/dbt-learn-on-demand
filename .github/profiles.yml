@@ -1,0 +1,13 @@
+ci_profile:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: WDQDMFF-HPC87490
+      user: ${{ secrets.SNOWFLAKE_USER }}
+      password: ${{ secrets.SNOWFLAKE_PASSWORD}}
+      role: USERADMIN
+      database: analytics
+      warehouse: transforming
+      threads: 4
+      client_session_keep_alive: false
