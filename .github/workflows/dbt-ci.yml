@@ -41,6 +41,7 @@ jobs:
         with:
           name: dbt-state
           path: ./ci_state  # Example directory
+        continue-on-error: true
 
       # Save the current state for the next run (optional, see below)
       - name: Save state for next run
