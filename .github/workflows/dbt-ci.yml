@@ -12,6 +12,10 @@ on:
     branches:
       - master
 
+env:
+  SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+  SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+
 jobs:
   dbt-ci:
     runs-on: ubuntu-latest
@@ -54,9 +58,7 @@ jobs:
         with:
           name: dbt-state
           path: target  # dbt will save state here with `dbt ls --state target`
-      
-      - name: Debug models env var
-        run: echo "${{ env.MODELS }}"        
+          
 
       # Run dbt list to get modified models
       - name: Get modified models
@@ -70,10 +72,10 @@ jobs:
             echo "MODELS=$(dbt list | paste -sd, -)" >> $GITHUB_ENV
           fi
 
+      - name: Debug models env var
+        run: echo "${{ env.MODELS }}"    
+        
       # Run required_tests operation on modified models
       - name: Run required_tests on modified models
-        env:
-          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
-          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
         run: |
           dbt run-operation required_tests --args '{"models": "${{ env.MODELS }}"}'
