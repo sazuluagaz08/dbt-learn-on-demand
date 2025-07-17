@@ -1,0 +1,62 @@
+name: dbt CI
+
+on:
+  pull_request:
+    paths:
+      - 'models/**'
+      - 'macros/**'
+      - 'dbt_project.yml'
+      - 'packages.yml'
+      - '.github/workflows/dbt-ci.yml'
+  push:
+    branches:
+      - master
+
+jobs:
+  dbt-ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install dbt-core dbt-snowflake # or dbt-snowflake/dbt-bigquery/etc depending on your adapter
+
+      - name: Install dbt packages
+        run: dbt deps
+
+      # Cache .dbt and dependencies if desired
+
+      # Optional: Set up state artifact (download from previous run or another branch)
+      - name: Download previous state artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dbt-state
+          path: ./ci_state  # Example directory
+
+      # Save the current state for the next run (optional, see below)
+      - name: Save state for next run
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-state
+          path: target  # dbt will save state here with `dbt ls --state target`
+
+      # Run dbt list to get modified models
+      - name: Get modified models
+        id: list_models
+        run: |
+          dbt list -m state:modified --state ci_state > modified_models.txt
+          echo "MODELS=$(cat modified_models.txt | paste -sd, -)" >> $GITHUB_ENV
+
+      # Run required_tests operation on modified models
+      - name: Run required_tests on modified models
+        run: |
+          dbt run-operation required_tests --args "{'models':'${{ env.MODELS }}'}"
