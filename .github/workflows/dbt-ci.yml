@@ -70,4 +70,4 @@ jobs:
       # Run required_tests operation on modified models
       - name: Run required_tests on modified models
         run: |
-          dbt run-operation required_tests --args "{'models':'${{ env.MODELS }}'}"
+          dbt run-operation required_tests --args '{"models": "${{ env.MODELS }}"}'

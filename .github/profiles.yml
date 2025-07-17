@@ -1,4 +1,4 @@
-ci_profile:
+default:
   target: dev
   outputs:
     dev:
