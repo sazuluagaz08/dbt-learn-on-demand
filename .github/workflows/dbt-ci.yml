@@ -65,16 +65,16 @@ jobs:
         id: list_models
         run: |
           if [ -d "ci_state" ]; then
-            dbt list -m state:modified --state ci_state > modified_models.txt
+            dbt list --quiet -m state:modified --state ci_state > modified_models.txt
             echo "MODELS=$(cat modified_models.txt | paste -sd, -)" >> $GITHUB_ENV
           else
             echo "No previous state found, running on all models."
-            echo "MODELS=$(dbt list | paste -sd, -)" >> $GITHUB_ENV
+            echo "MODELS=$(dbt list --quiet | paste -sd, -)" >> $GITHUB_ENV
           fi
 
       - name: Debug models env var
         run: echo "${{ env.MODELS }}"    
-        
+
       # Run required_tests operation on modified models
       - name: Run required_tests on modified models
         run: |
