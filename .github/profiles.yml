@@ -4,8 +4,8 @@ default:
     dev:
       type: snowflake
       account: WDQDMFF-HPC87490
-      user: ${{ secrets.SNOWFLAKE_USER}}
-      password: ${{ secrets.SNOWFLAKE_PASSWORD}}
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
       role: USERADMIN
       database: analytics
       warehouse: transforming

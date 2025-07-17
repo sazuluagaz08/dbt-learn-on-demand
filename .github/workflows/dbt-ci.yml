@@ -72,5 +72,8 @@ jobs:
 
       # Run required_tests operation on modified models
       - name: Run required_tests on modified models
+        env:
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
         run: |
           dbt run-operation required_tests --args '{"models": "${{ env.MODELS }}"}'
